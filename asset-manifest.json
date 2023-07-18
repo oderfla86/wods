@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/wods/static/css/main.31c46df9.css",
+    "main.js": "/wods/static/js/main.dd20ef57.js",
+    "static/js/787.f7cc5072.chunk.js": "/wods/static/js/787.f7cc5072.chunk.js",
+    "static/media/bg.png": "/wods/static/media/bg.1490083561e71d217e32.png",
+    "index.html": "/wods/index.html",
+    "main.31c46df9.css.map": "/wods/static/css/main.31c46df9.css.map",
+    "main.dd20ef57.js.map": "/wods/static/js/main.dd20ef57.js.map",
+    "787.f7cc5072.chunk.js.map": "/wods/static/js/787.f7cc5072.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.31c46df9.css",
+    "static/js/main.dd20ef57.js"
+  ]
+}
