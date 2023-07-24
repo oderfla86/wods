@@ -30,7 +30,7 @@ function Login(props) {
       surname: surnameRef.current.value,
       phone: phoneRef.current.value,
       id: props.user.current.uid,
-      workouts: JSON.stringify(props.workouts),
+      workouts: props.workouts,
     });
     props.validUser(true);
   };

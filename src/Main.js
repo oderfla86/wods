@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInAnonymously } from "firebase/auth";
-import { getDatabase, ref, onValue, set, get } from "firebase/database";
+import { getDatabase, ref, onValue, get } from "firebase/database";
 import WorkoutCard from "./components/WorkoutCards/WorkoutCard";
 import Loader from "./components/Loader/Loader";
 import Login from "./components/Login/Login";
@@ -21,7 +21,6 @@ export default function Main() {
   };
   let app = useRef(null);
   let db = useRef(null);
-  let wods = useRef(null);
   let user = useRef(null);
 
   useEffect(() => {
@@ -30,16 +29,12 @@ export default function Main() {
     authenticate();
   }, []);
 
-  // function getUid() {
-  //   return Math.floor(Math.random() * Date.now()).toString();
-  // }
-
   async function authenticate() {
     const auth = getAuth();
     const authUser = await signInAnonymously(auth);
     if (authUser) {
-      console.log("UID value:", authUser.user.uid);
       getWods();
+      console.log("UID value:", authUser.user.uid);
       user.current = {
         uid: authUser.user.uid,
         dbRef: ref(db.current, `users/${authUser.user.uid}`),
@@ -61,7 +56,8 @@ export default function Main() {
             name,
             surname,
             phone,
-            workouts: JSON.parse(workouts),
+            dbRef: user.current.dbRef,
+            workouts: workouts,
           };
           setIsExistingUser(true);
           setIsLoading(false);
@@ -93,7 +89,7 @@ export default function Main() {
     return <Loader />;
   } else {
     if (isExistingUser) {
-      return <WorkoutCard workouts={workouts} />;
+      return <WorkoutCard user={user.current} />;
     }
     return (
       <Login user={user} workouts={workouts} validUser={setIsExistingUser} />
