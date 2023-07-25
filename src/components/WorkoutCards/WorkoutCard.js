@@ -13,11 +13,15 @@ import InfoIcon from "@mui/icons-material/Info";
 import { Grid } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import { getKey } from "../../utils/util";
+import WorkoutDetailDialog from "../WorkoutDetailDialog/WorkoutDetailDialog";
 
 function WorkoutCard(props) {
   const [wods, setWods] = useState(
     props.user.workouts ? props.user.workouts : []
   );
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [selectedWod, setSelectedWod] = useState({});
+
   function favoriteCardClicked(e) {
     const updatedWods = wods.map((wod) => {
       if (wod.uuid === wods[e.currentTarget.id].uuid) {
@@ -32,7 +36,12 @@ function WorkoutCard(props) {
   }
 
   function getMoreInformation(e) {
-    console.log(wods[e.currentTarget.id]);
+    setSelectedWod(wods[e.currentTarget.id]);
+    setIsDetailsOpen(true);
+  }
+
+  function dismissDialog() {
+    setIsDetailsOpen(false);
   }
 
   return (
@@ -114,6 +123,11 @@ function WorkoutCard(props) {
           </Grid>
         );
       })}
+      <WorkoutDetailDialog
+        isOpen={isDetailsOpen}
+        wod={selectedWod}
+        close={dismissDialog}
+      />
     </Grid>
   );
 }
