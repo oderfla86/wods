@@ -3,11 +3,13 @@ import { update } from "firebase/database";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import InfoIcon from "@mui/icons-material/Info";
 import { Grid } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import { getKey } from "../../utils/util";
@@ -17,7 +19,6 @@ function WorkoutCard(props) {
     props.user.workouts ? props.user.workouts : []
   );
   function favoriteCardClicked(e) {
-    console.log(wods[e.currentTarget.id].title);
     const updatedWods = wods.map((wod) => {
       if (wod.uuid === wods[e.currentTarget.id].uuid) {
         wod.favorite = !wod.favorite;
@@ -28,6 +29,10 @@ function WorkoutCard(props) {
     update(props.user.dbRef, {
       workouts: updatedWods,
     });
+  }
+
+  function getMoreInformation(e) {
+    console.log(wods[e.currentTarget.id]);
   }
 
   return (
@@ -42,17 +47,6 @@ function WorkoutCard(props) {
                   <Avatar sx={{ bgcolor: red[900] }} aria-label="recipe">
                     AH
                   </Avatar>
-                }
-                action={
-                  <IconButton
-                    id={index}
-                    aria-label="add to favorites"
-                    onClick={favoriteCardClicked}
-                  >
-                    <FavoriteIcon
-                      style={{ color: wod.favorite ? red[900] : "default" }}
-                    ></FavoriteIcon>
-                  </IconButton>
                 }
                 title={title}
               />
@@ -98,6 +92,24 @@ function WorkoutCard(props) {
                   );
                 })}
               </CardContent>
+              <CardActions>
+                <IconButton
+                  id={index}
+                  aria-label="add to favorites"
+                  onClick={favoriteCardClicked}
+                >
+                  <FavoriteIcon
+                    style={{ color: wod.favorite ? red[900] : "default" }}
+                  />
+                </IconButton>
+                <IconButton
+                  aria-label="more info"
+                  id={index}
+                  onClick={getMoreInformation}
+                >
+                  <InfoIcon />
+                </IconButton>
+              </CardActions>
             </Card>
           </Grid>
         );

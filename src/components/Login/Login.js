@@ -28,8 +28,8 @@ function Login(props) {
 
   const submitUserData = () => {
     setOpen(false);
-    const usersRef = ref(props.db, `users/${phoneRef.current.value}`);
-    set(usersRef, {
+    const userRef = ref(props.db, `users/${phoneRef.current.value}`);
+    set(userRef, {
       name: nameRef.current.value,
       surname: surnameRef.current.value,
       phone: phoneRef.current.value,
@@ -41,6 +41,7 @@ function Login(props) {
       name: nameRef.current.value,
       surname: surnameRef.current.value,
       phone: phoneRef.current.value,
+      dbRef: userRef,
       workouts: props.workouts,
     });
     props.validUser(true);
@@ -58,7 +59,7 @@ function Login(props) {
             name,
             surname,
             phone,
-            dbRef: props.db,
+            dbRef: userRef,
             workouts: workouts,
           };
           props.saveUser(newUser);
