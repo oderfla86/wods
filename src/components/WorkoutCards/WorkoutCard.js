@@ -13,7 +13,9 @@ import Divider from "@mui/material/Divider";
 import { getKey } from "../../utils/util";
 
 function WorkoutCard(props) {
-  const [wods, setWods] = useState(props.user.workouts);
+  const [wods, setWods] = useState(
+    props.user.workouts ? props.user.workouts : []
+  );
   function favoriteCardClicked(e) {
     console.log(wods[e.currentTarget.id].title);
     const updatedWods = wods.map((wod) => {
@@ -27,6 +29,7 @@ function WorkoutCard(props) {
       workouts: updatedWods,
     });
   }
+
   return (
     <Grid container spacing={1} justifyContent="center">
       {wods.map((wod, index) => {

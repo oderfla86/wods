@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInAnonymously } from "firebase/auth";
-import { getDatabase, ref, onValue, get } from "firebase/database";
+import { getDatabase, ref, onValue, set } from "firebase/database";
 import WorkoutCard from "./components/WorkoutCards/WorkoutCard";
 import Loader from "./components/Loader/Loader";
 import Login from "./components/Login/Login";
 
 export default function Main() {
-  const [workouts, setWorkouts] = useState([]);
   const [isExistingUser, setIsExistingUser] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  // const images = require.context("./Images", true);
+  const [user, setUser] = useState({});
+
   const firebaseConfig = {
     apiKey: "AIzaSyA0dberbHig8XFSbGVjV86wf_rO5Eo1C7c",
     authDomain: "wods-53f4c.firebaseapp.com",
@@ -21,7 +21,8 @@ export default function Main() {
   };
   let app = useRef(null);
   let db = useRef(null);
-  let user = useRef(null);
+  let userUidRef = useRef(null);
+  let wodsRef = useRef(null);
 
   useEffect(() => {
     app.current = initializeApp(firebaseConfig);
@@ -35,48 +36,22 @@ export default function Main() {
     if (authUser) {
       getWods();
       console.log("UID value:", authUser.user.uid);
-      user.current = {
+      const uidRef = ref(db.current, `identifiers/${authUser.user.uid}`);
+      set(uidRef, {
         uid: authUser.user.uid,
-        dbRef: ref(db.current, `users/${authUser.user.uid}`),
-      };
-      getUserData();
+      });
+      userUidRef.current = authUser.user.uid;
     } else {
       console.error("Unable to authenticate user");
     }
-  }
-
-  async function getUserData() {
-    get(user.current.dbRef)
-      .then((userData) => {
-        if (userData.exists()) {
-          //user exists so we use its data
-          const { id, name, surname, phone, workouts } = userData.val();
-          user.current = {
-            id,
-            name,
-            surname,
-            phone,
-            dbRef: user.current.dbRef,
-            workouts: workouts,
-          };
-          setIsExistingUser(true);
-          setIsLoading(false);
-        } else {
-          //user doesn't exists, needs to login
-          setIsLoading(false);
-          console.log(`User with id:${user.current.uid} doesn't exist`);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   }
 
   async function getWods() {
     const wodsRef = ref(db.current, `workouts`);
     onValue(wodsRef, (snapshot) => {
       console.info(snapshot.val());
-      setWorkouts(snapshot.val());
+      wodsRef.current = snapshot.val();
+      setIsLoading(false);
       // const help = snapshot.val().map((item) => {
       //   item.uuid = getUid();
       //   return item;
@@ -89,10 +64,16 @@ export default function Main() {
     return <Loader />;
   } else {
     if (isExistingUser) {
-      return <WorkoutCard user={user.current} />;
+      return <WorkoutCard user={user} />;
     }
     return (
-      <Login user={user} workouts={workouts} validUser={setIsExistingUser} />
+      <Login
+        uid={userUidRef.current}
+        db={db.current}
+        workouts={wodsRef.current}
+        validUser={setIsExistingUser}
+        saveUser={setUser}
+      />
     );
   }
 }
