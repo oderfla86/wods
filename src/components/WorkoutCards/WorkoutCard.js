@@ -31,7 +31,7 @@ function WorkoutCard(props) {
   }
 
   return (
-    <Grid container spacing={1} justifyContent="center">
+    <Grid container spacing={3} justifyContent="center" sx={{ p: 5 }}>
       {wods.map((wod, index) => {
         const { title, description, workout } = wod;
         return (

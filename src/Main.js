@@ -5,6 +5,7 @@ import { getDatabase, ref, onValue, set } from "firebase/database";
 import WorkoutCard from "./components/WorkoutCards/WorkoutCard";
 import Loader from "./components/Loader/Loader";
 import Login from "./components/Login/Login";
+import AppBarNav from "./components/AppBar/AppBar";
 
 export default function Main() {
   const [isExistingUser, setIsExistingUser] = useState(false);
@@ -60,11 +61,17 @@ export default function Main() {
     });
   }
 
+  function logout() {
+    setIsExistingUser(false);
+    setUser({});
+  }
+
   if (isLoading) {
     return <Loader />;
   } else {
     if (isExistingUser) {
-      return <WorkoutCard user={user} />;
+      //return <WorkoutCard user={user} />;
+      return <AppBarNav user={user} logout={logout} view={"default"} />;
     }
     return (
       <Login
