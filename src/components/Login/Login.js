@@ -36,6 +36,13 @@ function Login(props) {
       id: props.uid,
       workouts: props.workouts,
     });
+    props.saveUser({
+      id: props.uid,
+      name: nameRef.current.value,
+      surname: surnameRef.current.value,
+      phone: phoneRef.current.value,
+      workouts: props.workouts,
+    });
     props.validUser(true);
   };
 
