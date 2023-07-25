@@ -5,6 +5,7 @@ import { getDatabase, ref, onValue, set } from "firebase/database";
 import WorkoutCard from "./components/WorkoutCards/WorkoutCard";
 import Loader from "./components/Loader/Loader";
 import Login from "./components/Login/Login";
+import AppBarNav from "./components/AppBar/AppBar";
 
 export default function Main() {
   const [isExistingUser, setIsExistingUser] = useState(false);
@@ -22,7 +23,7 @@ export default function Main() {
   let app = useRef(null);
   let db = useRef(null);
   let userUidRef = useRef(null);
-  let wodsRef = useRef(null);
+  let workoutsRef = useRef(null);
 
   useEffect(() => {
     app.current = initializeApp(firebaseConfig);
@@ -50,7 +51,7 @@ export default function Main() {
     const wodsRef = ref(db.current, `workouts`);
     onValue(wodsRef, (snapshot) => {
       console.info(snapshot.val());
-      wodsRef.current = snapshot.val();
+      workoutsRef.current = snapshot.val();
       setIsLoading(false);
       // const help = snapshot.val().map((item) => {
       //   item.uuid = getUid();
@@ -60,17 +61,23 @@ export default function Main() {
     });
   }
 
+  function logout() {
+    setIsExistingUser(false);
+    setUser({});
+  }
+
   if (isLoading) {
     return <Loader />;
   } else {
     if (isExistingUser) {
-      return <WorkoutCard user={user} />;
+      //return <WorkoutCard user={user} />;
+      return <AppBarNav user={user} logout={logout} view={"default"} />;
     }
     return (
       <Login
         uid={userUidRef.current}
         db={db.current}
-        workouts={wodsRef.current}
+        workouts={workoutsRef.current}
         validUser={setIsExistingUser}
         saveUser={setUser}
       />
